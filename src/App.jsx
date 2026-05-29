@@ -1500,7 +1500,21 @@ function NewsPage({ isPro, onUpgrade }) {
 
 const CHANGELOG = [
   {
-    version:"v1.6", date:"May 25, 2026", label:"Latest", labelColor:"#22C55E",
+    version:"v1.8", date:"May 28, 2026", label:"Latest", labelColor:"#22C55E",
+    changes:[
+      { type:"new", text:"Added Community page with forum, live chat, success stories, and feedback" },
+      { type:"new", text:"Added Scholarship Hub with 20+ real scholarships, tracker, and essay helper" },
+      { type:"new", text:"Added email gate for community — keeps the space safe and accountable" },
+      { type:"new", text:"Added community rules screen before entering" },
+      { type:"new", text:"Added Founder badge for StudentRise official account" },
+      { type:"new", text:"Seeded forum with 10 starter posts and 8 success stories" },
+      { type:"improve", text:"Username validation — blocks inappropriate names automatically" },
+      { type:"improve", text:"Feedback now saves to Google Sheets automatically" },
+      { type:"improve", text:"Changelog now shows glowing Pro coming soon section" },
+    ]
+  },
+  {
+    version:"v1.6", date:"May 25, 2026", label:"", labelColor:"#6366F1",
     changes:[
       { type:"new", text:"Added News & Updates page with student spotlights and deadline ticker" },
       { type:"new", text:"Added Changelog page — you're reading it!" },
@@ -1585,8 +1599,30 @@ function ChangelogPage({ onUpgrade }) {
       </div>
 
       <div style={{ maxWidth:800, margin:"0 auto", padding:"0 1rem 3rem" }}>
+        {/* Pro Coming Soon Golden Box */}
+        <div style={{ background:"linear-gradient(135deg,#FFFBEB,#FEF3C7)", border:"2px solid #F59E0B", borderRadius:16, padding:"1.25rem", marginTop:24, marginBottom:16, boxShadow:"0 4px 24px rgba(245,158,11,0.2)" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+            <div>
+              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                <span style={{ fontSize:22 }}>⚡</span>
+                <p style={{ margin:0, fontSize:18, fontWeight:800, color:"#92400E" }}>Pro is coming soon!</p>
+                <span style={{ background:"#EF4444", color:"#fff", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:999 }}>LAUNCHING SOON</span>
+              </div>
+              <p style={{ margin:"0 0 8px", fontSize:13, color:"#B45309" }}>$4.99/mo — Save opportunities, track applications, AI match scores, and much more</p>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                {["🔖 Save opportunities","📋 App tracker","🤖 AI match scores","📧 Weekly digest","⚡ Early access","🎓 Essay helper"].map(f=>(
+                  <span key={f} style={{ background:"rgba(245,158,11,0.15)", color:"#92400E", fontSize:11, fontWeight:600, padding:"2px 8px", borderRadius:999 }}>{f}</span>
+                ))}
+              </div>
+            </div>
+            <button onClick={onUpgrade} style={{ background:"linear-gradient(135deg,#F59E0B,#EF4444)", color:"#fff", border:"none", padding:"12px 24px", borderRadius:12, fontWeight:800, fontSize:14, cursor:"pointer", boxShadow:"0 4px 16px rgba(245,158,11,0.4)", whiteSpace:"nowrap", flexShrink:0 }}>
+              Join Waitlist ⚡
+            </button>
+          </div>
+        </div>
+
         {/* Coming soon section */}
-        <div style={{ background:"#fff", border:"1.5px solid #F1F5F9", borderRadius:20, padding:"1.5rem", marginTop:24, marginBottom:24, boxShadow:"0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div style={{ background:"#fff", border:"1.5px solid #F1F5F9", borderRadius:20, padding:"1.5rem", marginBottom:24, boxShadow:"0 2px 12px rgba(0,0,0,0.04)" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16, flexWrap:"wrap", gap:8 }}>
             <p style={{ margin:0, fontSize:16, fontWeight:700, color:"#0F172A" }}>🔮 Coming Soon</p>
             <button onClick={onUpgrade} style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"8px 16px", borderRadius:10, fontWeight:700, fontSize:12, cursor:"pointer" }}>⚡ Pro members get early access</button>
@@ -1630,6 +1666,966 @@ function ChangelogPage({ onUpgrade }) {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+
+
+
+// ============================================================
+// SCHOLARSHIP HUB COMPONENT
+// ============================================================
+
+const SCHOLARSHIPS = [
+  { id:1, title:"Questbridge College Prep Scholarship", amount:2500, amountLabel:"Up to $2,500", organization:"Questbridge", category:"merit", gpaReq:"3.5+", deadline:"2026-09-26", location:"US only", demographics:["low-income"], major:"Any", description:"Connects high-achieving, low-income students with top colleges and full scholarships. One of the most impactful scholarship programs for high schoolers.", link:"https://www.questbridge.org/", featured:true, tags:["merit","need-based","college prep"] },
+  { id:2, title:"Regeneron Science Talent Search", amount:250000, amountLabel:"Up to $250,000", organization:"Society for Science", category:"stem", gpaReq:"3.5+", deadline:"2026-11-15", location:"US only", demographics:["any"], major:"STEM", description:"America's oldest and most prestigious science and math competition for high school seniors. Present original research for a chance at life-changing awards.", link:"https://www.societyforscience.org/regeneron-sts/", featured:true, tags:["STEM","research","competition"] },
+  { id:3, title:"Coca-Cola Scholars Program", amount:20000, amountLabel:"$20,000", organization:"Coca-Cola Foundation", category:"merit", gpaReq:"3.0+", deadline:"2026-10-31", location:"US only", demographics:["any"], major:"Any", description:"One of the most prestigious and competitive scholarships in the US. Awards 150 students annually based on character, personal initiative, and community service.", link:"https://www.coca-colascholarsfoundation.org/", featured:true, tags:["merit","leadership","community service"] },
+  { id:4, title:"Gates Scholarship", amount:999999, amountLabel:"Full ride", organization:"Bill & Melinda Gates Foundation", category:"need", gpaReq:"3.3+", deadline:"2026-09-15", location:"US only", demographics:["minority","low-income"], major:"Any", description:"Highly selective full scholarship for outstanding minority students with significant financial need. Covers full cost of attendance at any accredited US college.", link:"https://www.thegatesscholarship.org/", featured:true, tags:["full ride","need-based","minority"] },
+  { id:5, title:"National Merit Scholarship", amount:2500, amountLabel:"$2,500+", organization:"National Merit Corporation", category:"merit", gpaReq:"3.5+", deadline:"2026-10-15", location:"US only", demographics:["any"], major:"Any", description:"Take the PSAT/NMSQT to qualify. One of the most recognized academic honors in the US — great for college applications even if you don't win.", link:"https://www.nationalmerit.org/", featured:false, tags:["merit","PSAT","academic"] },
+  { id:6, title:"Ron Brown Scholar Program", amount:40000, amountLabel:"$40,000 total", organization:"Ron Brown Scholar Program", category:"need", gpaReq:"3.0+", deadline:"2026-11-01", location:"US only", demographics:["african-american"], major:"Any", description:"Highly competitive scholarship for African American students who show academic excellence, leadership, service, and financial need.", link:"https://www.ronbrown.org/", featured:false, tags:["african-american","leadership","need-based"] },
+  { id:7, title:"Hispanic Scholarship Fund", amount:5000, amountLabel:"Up to $5,000", organization:"HSF", category:"need", gpaReq:"3.0+", deadline:"2026-02-15", location:"US only", demographics:["hispanic","latino"], major:"Any", description:"Supports Hispanic and Latino students pursuing higher education. Awards thousands of scholarships annually across all majors.", link:"https://www.hsf.net/", featured:false, tags:["hispanic","latino","need-based"] },
+  { id:8, title:"Elks National Foundation Most Valuable Student", amount:50000, amountLabel:"Up to $50,000", organization:"Elks Foundation", category:"merit", gpaReq:"none", deadline:"2026-11-15", location:"US only", demographics:["any"], major:"Any", description:"One of the largest scholarship competitions in the US. Awards based on scholarship, leadership, and financial need.", link:"https://www.elks.org/scholars/", featured:false, tags:["merit","leadership","large award"] },
+  { id:9, title:"Siemens Competition", amount:100000, amountLabel:"Up to $100,000", organization:"Discovery Education", category:"stem", gpaReq:"none", deadline:"2026-09-15", location:"US only", demographics:["any"], major:"STEM", description:"Submit original STEM research for one of the most prestigious competitions. Scholarship prizes up to $100,000 for individual and team projects.", link:"https://www.discoveryeducation.com/siemens-competition/", featured:false, tags:["STEM","research","competition"] },
+  { id:10, title:"Scholastic Art & Writing Awards", amount:10000, amountLabel:"Up to $10,000", organization:"Alliance for Young Artists", category:"arts", gpaReq:"none", deadline:"2026-12-01", location:"US only", demographics:["any"], major:"Arts", description:"The nation's longest-running and most prestigious scholarship program for creative teens. Submit original artwork or writing across 29 categories.", link:"https://www.artandwriting.org/", featured:false, tags:["arts","creative","writing"] },
+  { id:11, title:"Davidson Fellows Scholarship", amount:50000, amountLabel:"Up to $50,000", organization:"Davidson Institute", category:"merit", gpaReq:"none", deadline:"2026-02-01", location:"US only", demographics:["any"], major:"Any", description:"For profoundly gifted students who have completed a significant piece of work in STEM, literature, music, philosophy, or outside the box.", link:"https://www.davidsongifted.org/fellows-scholarship/", featured:false, tags:["gifted","merit","STEM","arts"] },
+  { id:12, title:"AXA Achievement Scholarship", amount:10000, amountLabel:"$10,000", organization:"AXA Foundation", category:"merit", gpaReq:"none", deadline:"2026-12-15", location:"US only", demographics:["any"], major:"Any", description:"Recognizes students who have demonstrated outstanding achievement in activities, community, and school. Based on ambition and drive.", link:"https://us.axa.com/axa-foundation/scholarship.html", featured:false, tags:["merit","achievement","leadership"] },
+  { id:13, title:"Jack Kent Cooke Foundation Scholarship", amount:40000, amountLabel:"Up to $40,000/yr", organization:"Jack Kent Cooke Foundation", category:"need", gpaReq:"3.5+", deadline:"2026-11-17", location:"US only", demographics:["low-income"], major:"Any", description:"For high-achieving students with financial need. One of the largest private scholarships in the US — covers tuition, living expenses, and books.", link:"https://www.jkcf.org/", featured:false, tags:["need-based","full ride","academic"] },
+  { id:14, title:"Horatio Alger Scholarship", amount:25000, amountLabel:"$25,000", organization:"Horatio Alger Association", category:"need", gpaReq:"2.0+", deadline:"2026-10-25", location:"US only", demographics:["any"], major:"Any", description:"For students who have overcome adversity and demonstrated integrity and perseverance. One of the largest need-based scholarship programs.", link:"https://scholars.horatioalger.org/", featured:false, tags:["need-based","adversity","perseverance"] },
+  { id:15, title:"Thurgood Marshall College Fund", amount:5000, amountLabel:"Up to $5,000", organization:"TMCF", category:"need", gpaReq:"3.0+", deadline:"2026-09-30", location:"US only", demographics:["african-american"], major:"Any", description:"Supports students attending Historically Black Colleges and Universities. Awards based on academic achievement and financial need.", link:"https://tmcf.org/", featured:false, tags:["HBCU","african-american","need-based"] },
+  { id:16, title:"STEM Scholarships — Society of Women Engineers", amount:15000, amountLabel:"Up to $15,000", organization:"SWE", category:"stem", gpaReq:"3.0+", deadline:"2026-05-01", location:"US only", demographics:["women"], major:"Engineering", description:"Supports women pursuing degrees in engineering and technology. Multiple scholarship levels available based on merit and financial need.", link:"https://swe.org/scholarships/", featured:false, tags:["women","engineering","STEM"] },
+  { id:17, title:"DoSomething.org Scholarships", amount:5000, amountLabel:"Up to $5,000", organization:"DoSomething.org", category:"service", gpaReq:"none", deadline:"2026-12-31", location:"US only", demographics:["any"], major:"Any", description:"Complete social change campaigns and earn scholarship dollars. No essay required for most campaigns — just take action.", link:"https://www.dosomething.org/", featured:false, tags:["service","activism","no-essay"] },
+  { id:18, title:"NAACP Scholarship Programs", amount:10000, amountLabel:"Up to $10,000", organization:"NAACP", category:"need", gpaReq:"2.5+", deadline:"2026-04-30", location:"US only", demographics:["african-american"], major:"Any", description:"Multiple scholarship programs for NAACP members demonstrating academic excellence and community involvement.", link:"https://naacp.org/find-resources/scholarships-awards-internships", featured:false, tags:["african-american","community","leadership"] },
+  { id:19, title:"Courage to Grow Scholarship", amount:500, amountLabel:"$500/month", organization:"Courage to Grow", category:"merit", gpaReq:"2.5+", deadline:"2026-12-31", location:"US only", demographics:["any"], major:"Any", description:"Monthly scholarship awarded to students who demonstrate perseverance and a desire to grow. Short essay required — great for students who don't qualify for other scholarships.", link:"https://couragetogrowscholarship.com/", featured:false, tags:["monthly","easy apply","merit"] },
+  { id:20, title:"Fastweb Scholarship Database", amount:999999, amountLabel:"Varies", organization:"Fastweb", category:"merit", gpaReq:"none", deadline:"2026-12-31", location:"US only", demographics:["any"], major:"Any", description:"Search engine for over 1.5 million scholarships worth more than $3.4 billion. Create a free profile and get matched to scholarships you qualify for.", link:"https://www.fastweb.com/", featured:false, tags:["database","search","all majors"] },
+];
+
+const SCHOLARSHIP_CATEGORIES = ["all","merit","need","stem","arts","service"];
+const SCHOLARSHIP_DEMOGRAPHICS = ["any","low-income","minority","african-american","hispanic","latino","women"];
+const SCHOLARSHIP_MAJORS = ["Any","STEM","Engineering","Arts","Business","Education","Healthcare"];
+const APP_STATUS_SCHOLARSHIP = ["Interested","Applied","Waiting","Won","Not selected"];
+const STATUS_COLORS_SCHOLARSHIP = { Interested:"#6366F1", Applied:"#0EA5E9", Waiting:"#F59E0B", Won:"#22C55E", "Not selected":"#94A3B8" };
+const GPA_OPTIONS = ["none","2.0+","2.5+","3.0+","3.3+","3.5+","3.7+"];
+
+function ScholarshipHub({ isPro, onUpgrade }) {
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [demographic, setDemographic] = useState("any");
+  const [major, setMajor] = useState("Any");
+  const [gpa, setGpa] = useState("any");
+  const [minAmount, setMinAmount] = useState("");
+  const [deadline, setDeadline] = useState("all");
+  const [scholarshipStatuses, setScholarshipStatuses] = useState({});
+  const [savedScholarships, setSavedScholarships] = useState([]);
+  const [activeTab, setActiveTab] = useState("find");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const GPA_RANK = { "none":0,"2.0+":2.0,"2.5+":2.5,"3.0+":3.0,"3.3+":3.3,"3.5+":3.5,"3.7+":3.7 };
+  const DEADLINE_FILTERS = [{ label:"Any time", value:"all" },{ label:"Next 30 days", value:"30" },{ label:"Next 3 months", value:"90" },{ label:"Next 6 months", value:"180" }];
+
+  const filtered = SCHOLARSHIPS.filter(s=>{
+    const q = search.toLowerCase();
+    const daysLeft = Math.ceil((new Date(s.deadline)-new Date())/86400000);
+    const matchSearch = !q||s.title.toLowerCase().includes(q)||s.organization.toLowerCase().includes(q)||s.description.toLowerCase().includes(q)||s.tags.some(t=>t.toLowerCase().includes(q));
+    const matchCat = category==="all"||s.category===category;
+    const matchDemo = demographic==="any"||s.demographics.includes("any")||s.demographics.includes(demographic);
+    const matchMajor = major==="Any"||s.major==="Any"||s.major===major;
+    const matchGpa = gpa==="any"||(GPA_RANK[s.gpaReq]||0)<=(GPA_RANK[gpa]||0)||s.gpaReq==="none";
+    const matchAmount = !minAmount||s.amount>=Number(minAmount);
+    const matchDeadline = deadline==="all"||(daysLeft>0&&daysLeft<=Number(deadline));
+    return matchSearch&&matchCat&&matchDemo&&matchMajor&&matchGpa&&matchAmount&&matchDeadline;
+  });
+
+  const featured = filtered.filter(s=>s.featured);
+  const regular = filtered.filter(s=>!s.featured);
+
+  const toggleSave = (id) => setSavedScholarships(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
+  const setStatus = (id, status) => {
+    setScholarshipStatuses(prev=>{ const n={...prev}; if(status===null) delete n[id]; else n[id]=status; return n; });
+    if (status && !savedScholarships.includes(id)) setSavedScholarships(prev=>[...prev,id]);
+  };
+
+  const tracked = SCHOLARSHIPS.filter(s=>scholarshipStatuses[s.id]);
+  const byStatus = APP_STATUS_SCHOLARSHIP.reduce((acc,s)=>{ acc[s]=tracked.filter(x=>scholarshipStatuses[x.id]===s); return acc; },{});
+
+  const selBtn = (active)=>({ padding:"6px 14px", borderRadius:999, border:"1.5px solid", fontSize:12, fontWeight:500, cursor:"pointer", whiteSpace:"nowrap", background:active?"#6366F1":"#fff", color:active?"#fff":"#64748B", borderColor:active?"#6366F1":"#E2E8F0" });
+  const inp = { padding:"8px 12px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", fontFamily:"inherit", background:"#fff" };
+
+  const tabs = [
+    { id:"find", icon:"🔍", label:"Find Scholarships" },
+    { id:"tracker", icon:"📋", label:"My Tracker" },
+    { id:"essay", icon:"✍️", label:"Essay Helper" },
+  ];
+
+  return (
+    <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#F8FAFC", minHeight:"100vh" }}>
+      <div style={{ background:"linear-gradient(135deg,#064E3B 0%,#065F46 60%,#047857 100%)", padding:"2.5rem 1.5rem 3.5rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+        <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle at 20% 50%, rgba(255,255,255,0.07) 0%, transparent 50%)" }} />
+        <div style={{ position:"relative" }}>
+          <span style={{ background:"rgba(255,255,255,0.15)", color:"#fff", fontSize:12, fontWeight:700, padding:"4px 14px", borderRadius:999, letterSpacing:"0.08em", display:"inline-block", marginBottom:14 }}>SCHOLARSHIP HUB</span>
+          <h1 style={{ margin:"0 0 10px", fontSize:"clamp(24px,5vw,42px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em" }}>Find Your Scholarship 🎓</h1>
+          <p style={{ margin:"0 0 20px", color:"rgba(255,255,255,0.75)", fontSize:15, maxWidth:480, marginLeft:"auto", marginRight:"auto" }}>{SCHOLARSHIPS.length} scholarships worth millions of dollars — find the ones you qualify for</p>
+          <div style={{ display:"inline-flex", gap:20, background:"rgba(255,255,255,0.12)", borderRadius:16, padding:"12px 24px", flexWrap:"wrap", justifyContent:"center" }}>
+            <div style={{ textAlign:"center" }}>
+              <p style={{ margin:"0 0 2px", fontSize:28, fontWeight:800, color:"#fff" }}>{SCHOLARSHIPS.length}</p>
+              <p style={{ margin:0, fontSize:11, color:"rgba(255,255,255,0.7)" }}>scholarships listed</p>
+            </div>
+            <div style={{ width:1, background:"rgba(255,255,255,0.2)" }} />
+            <div style={{ textAlign:"center" }}>
+              <p style={{ margin:"0 0 2px", fontSize:28, fontWeight:800, color:"#fff" }}>{tracked.length}</p>
+              <p style={{ margin:0, fontSize:11, color:"rgba(255,255,255,0.7)" }}>being tracked</p>
+            </div>
+            <div style={{ width:1, background:"rgba(255,255,255,0.2)" }} />
+            <div style={{ textAlign:"center" }}>
+              <p style={{ margin:"0 0 2px", fontSize:28, fontWeight:800, color:"#FCD34D" }}>${(SCHOLARSHIPS.reduce((sum,s)=>sum+(s.amount>100000?100000:s.amount),0)/1000).toFixed(0)}K+</p>
+              <p style={{ margin:0, fontSize:11, color:"rgba(255,255,255,0.7)" }}>in available awards</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth:960, margin:"0 auto", padding:"0 1rem 3rem" }}>
+        <div style={{ display:"flex", gap:4, background:"#fff", borderRadius:16, border:"1.5px solid #F1F5F9", padding:4, marginTop:16, boxShadow:"0 4px 24px rgba(0,0,0,0.07)", marginBottom:24, overflowX:"auto" }}>
+          {tabs.map(t=>(
+            <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{ padding:"9px 18px", borderRadius:10, border:"none", fontSize:13, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:5, whiteSpace:"nowrap", flex:1, justifyContent:"center", background:activeTab===t.id?"linear-gradient(135deg,#047857,#059669)":"transparent", color:activeTab===t.id?"#fff":"#64748B", boxShadow:activeTab===t.id?"0 2px 8px rgba(5,150,105,0.3)":"none" }}>
+              {t.icon} {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* FIND SCHOLARSHIPS */}
+        {activeTab==="find" && (
+          <div>
+            <div style={{ background:"#fff", borderRadius:20, border:"1.5px solid #F1F5F9", padding:"1.25rem", boxShadow:"0 2px 12px rgba(0,0,0,0.04)", marginBottom:20 }}>
+              <div style={{ display:"flex", gap:10, marginBottom:12 }}>
+                <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍  Search scholarships by name, organization, or keyword..."
+                  style={{ flex:1, padding:"12px 16px", borderRadius:12, border:"1.5px solid #E2E8F0", fontSize:14, outline:"none", fontFamily:"inherit", background:"#F8FAFC" }} />
+                <button onClick={()=>setFiltersOpen(f=>!f)} style={{ padding:"10px 16px", borderRadius:12, border:"1.5px solid", fontSize:13, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap", background:filtersOpen?"#047857":"#fff", color:filtersOpen?"#fff":"#374151", borderColor:filtersOpen?"#047857":"#E2E8F0" }}>
+                  🎛 Filters
+                </button>
+              </div>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
+                <span style={{ fontSize:11, fontWeight:700, color:"#94A3B8", textTransform:"uppercase", letterSpacing:"0.06em", alignSelf:"center" }}>Category:</span>
+                {SCHOLARSHIP_CATEGORIES.map(c=><button key={c} onClick={()=>setCategory(c)} style={selBtn(category===c)}>{c==="all"?"All":c==="stem"?"STEM":c==="need"?"Need-Based":c==="merit"?"Merit":c==="arts"?"Arts":"Service"}</button>)}
+              </div>
+              {filtersOpen && (
+                <div style={{ marginTop:14, paddingTop:14, borderTop:"1px solid #F1F5F9", display:"grid", gap:14 }}>
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+                    <div>
+                      <p style={{ margin:"0 0 6px", fontSize:11, fontWeight:700, color:"#94A3B8", textTransform:"uppercase", letterSpacing:"0.06em" }}>Demographics</p>
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                        {SCHOLARSHIP_DEMOGRAPHICS.map(d=><button key={d} onClick={()=>setDemographic(d)} style={selBtn(demographic===d)}>{d==="any"?"Anyone":d}</button>)}
+                      </div>
+                    </div>
+                    <div>
+                      <p style={{ margin:"0 0 6px", fontSize:11, fontWeight:700, color:"#94A3B8", textTransform:"uppercase", letterSpacing:"0.06em" }}>Major / Field</p>
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                        {SCHOLARSHIP_MAJORS.map(m=><button key={m} onClick={()=>setMajor(m)} style={selBtn(major===m)}>{m}</button>)}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
+                    <div>
+                      <label style={{ fontSize:12, fontWeight:600, color:"#374151", display:"block", marginBottom:4 }}>My GPA</label>
+                      <select value={gpa} onChange={e=>setGpa(e.target.value)} style={{ ...inp, width:"100%", boxSizing:"border-box" }}>
+                        <option value="any">Any GPA</option>
+                        {GPA_OPTIONS.filter(g=>g!=="none").map(g=><option key={g} value={g}>I have {g}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ fontSize:12, fontWeight:600, color:"#374151", display:"block", marginBottom:4 }}>Min amount ($)</label>
+                      <input type="number" value={minAmount} onChange={e=>setMinAmount(e.target.value)} placeholder="e.g. 1000" style={{ ...inp, width:"100%", boxSizing:"border-box" }} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize:12, fontWeight:600, color:"#374151", display:"block", marginBottom:4 }}>Deadline</label>
+                      <select value={deadline} onChange={e=>setDeadline(e.target.value)} style={{ ...inp, width:"100%", boxSizing:"border-box" }}>
+                        {DEADLINE_FILTERS.map(d=><option key={d.value} value={d.value}>{d.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <button onClick={()=>{ setCategory("all"); setDemographic("any"); setMajor("Any"); setGpa("any"); setMinAmount(""); setDeadline("all"); setSearch(""); }} style={{ background:"none", border:"1px solid #FECACA", padding:"7px 16px", borderRadius:10, fontSize:13, color:"#EF4444", fontWeight:600, cursor:"pointer", alignSelf:"flex-start" }}>✕ Clear filters</button>
+                </div>
+              )}
+            </div>
+
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+              <p style={{ margin:0, fontSize:14, color:"#64748B" }}><strong style={{ color:"#0F172A" }}>{filtered.length}</strong> of {SCHOLARSHIPS.length} scholarships</p>
+            </div>
+
+            {featured.length>0 && (
+              <>
+                <p style={{ margin:"0 0 10px", fontSize:12, fontWeight:700, color:"#047857", textTransform:"uppercase", letterSpacing:"0.08em" }}>⭐ Featured</p>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:14, marginBottom:24 }}>
+                  {featured.map(s=><ScholarshipCard key={s.id} scholarship={s} saved={savedScholarships.includes(s.id)} onSave={toggleSave} status={scholarshipStatuses[s.id]} onStatus={setStatus} />)}
+                </div>
+              </>
+            )}
+            {regular.length>0 && (
+              <>
+                {featured.length>0 && <p style={{ margin:"0 0 10px", fontSize:12, fontWeight:700, color:"#64748B", textTransform:"uppercase", letterSpacing:"0.08em" }}>All Scholarships</p>}
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:14 }}>
+                  {regular.map(s=><ScholarshipCard key={s.id} scholarship={s} saved={savedScholarships.includes(s.id)} onSave={toggleSave} status={scholarshipStatuses[s.id]} onStatus={setStatus} />)}
+                </div>
+              </>
+            )}
+            {filtered.length===0 && (
+              <div style={{ textAlign:"center", padding:"3rem" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>🔍</div>
+                <p style={{ fontSize:16, fontWeight:600, color:"#64748B" }}>No scholarships match your filters.</p>
+                <button onClick={()=>{ setCategory("all"); setDemographic("any"); setMajor("Any"); setGpa("any"); setMinAmount(""); setDeadline("all"); setSearch(""); }} style={{ marginTop:12, background:"#047857", color:"#fff", border:"none", padding:"10px 20px", borderRadius:10, fontWeight:600, cursor:"pointer" }}>Clear filters</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TRACKER */}
+        {activeTab==="tracker" && (
+          <div>
+            {tracked.length===0 ? (
+              <div style={{ textAlign:"center", padding:"3rem" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
+                <h2 style={{ margin:"0 0 8px", fontSize:20, fontWeight:700, color:"#0F172A" }}>No scholarships tracked yet</h2>
+                <p style={{ color:"#64748B", margin:"0 0 16px", fontSize:14 }}>Click "Track" on any scholarship card to track your application status here.</p>
+                <button onClick={()=>setActiveTab("find")} style={{ background:"linear-gradient(135deg,#047857,#059669)", color:"#fff", border:"none", padding:"10px 20px", borderRadius:10, fontWeight:600, cursor:"pointer" }}>Find Scholarships →</button>
+              </div>
+            ) : (
+              <div>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:10, marginBottom:24 }}>
+                  {APP_STATUS_SCHOLARSHIP.map(s=>(
+                    <div key={s} style={{ background:"#fff", border:`1.5px solid ${STATUS_COLORS_SCHOLARSHIP[s]}30`, borderRadius:12, padding:"0.75rem", textAlign:"center" }}>
+                      <p style={{ margin:"0 0 4px", fontSize:22, fontWeight:800, color:STATUS_COLORS_SCHOLARSHIP[s] }}>{byStatus[s].length}</p>
+                      <p style={{ margin:0, fontSize:12, color:"#64748B", fontWeight:500 }}>{s}</p>
+                    </div>
+                  ))}
+                </div>
+                {APP_STATUS_SCHOLARSHIP.filter(s=>byStatus[s].length>0).map(s=>(
+                  <div key={s} style={{ marginBottom:24 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+                      <div style={{ width:10, height:10, borderRadius:"50%", background:STATUS_COLORS_SCHOLARSHIP[s] }} />
+                      <p style={{ margin:0, fontSize:13, fontWeight:700, color:STATUS_COLORS_SCHOLARSHIP[s], textTransform:"uppercase", letterSpacing:"0.06em" }}>{s} ({byStatus[s].length})</p>
+                    </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:12 }}>
+                      {byStatus[s].map(scholarship=><ScholarshipCard key={scholarship.id} scholarship={scholarship} saved={savedScholarships.includes(scholarship.id)} onSave={toggleSave} status={scholarshipStatuses[scholarship.id]} onStatus={setStatus} />)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ESSAY HELPER */}
+        {activeTab==="essay" && (
+          <div style={{ maxWidth:680, margin:"0 auto" }}>
+            <div style={{ background:"linear-gradient(135deg,#FFFBEB,#FEF3C7)", border:"2px solid #F59E0B", borderRadius:20, padding:"2rem", textAlign:"center", boxShadow:"0 4px 24px rgba(245,158,11,0.15)", marginBottom:20 }}>
+              <div style={{ fontSize:48, marginBottom:12 }}>✍️</div>
+              <h2 style={{ margin:"0 0 8px", fontSize:22, fontWeight:800, color:"#92400E" }}>AI Essay Helper — Coming Soon</h2>
+              <p style={{ color:"#B45309", margin:"0 0 20px", fontSize:14, lineHeight:1.6 }}>Our AI-powered scholarship essay assistant is almost ready. It will help you brainstorm ideas, write compelling drafts, and get detailed feedback on your essays — all tailored to specific scholarships.</p>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:20, textAlign:"left" }}>
+                {[["🧠","AI Essay Brainstormer","Generate unique essay angles and ideas based on the scholarship prompt"],["✍️","Draft Generator","Get a full first draft based on your experiences and achievements"],["📝","Essay Feedback","Detailed feedback on structure, tone, and argument strength"],["🎯","Scholarship Matching","AI matches your essay style to what each scholarship is looking for"]].map(([icon,title,desc])=>(
+                  <div key={title} style={{ background:"rgba(255,255,255,0.6)", borderRadius:12, padding:"12px" }}>
+                    <p style={{ margin:"0 0 4px", fontSize:13, fontWeight:700, color:"#92400E" }}>{icon} {title}</p>
+                    <p style={{ margin:0, fontSize:11, color:"#B45309", lineHeight:1.4 }}>{desc}</p>
+                  </div>
+                ))}
+              </div>
+              <button onClick={onUpgrade} style={{ background:"linear-gradient(135deg,#F59E0B,#EF4444)", color:"#fff", border:"none", padding:"12px 28px", borderRadius:12, fontWeight:700, fontSize:14, cursor:"pointer", boxShadow:"0 4px 16px rgba(245,158,11,0.4)" }}>
+                ⚡ Join Pro Waitlist — Get Early Access
+              </button>
+            </div>
+            <div style={{ background:"#fff", border:"1.5px solid #F1F5F9", borderRadius:16, padding:"1.25rem" }}>
+              <p style={{ margin:"0 0 12px", fontSize:14, fontWeight:700, color:"#0F172A" }}>📚 Free Essay Resources</p>
+              {[
+                { title:"Common Scholarship Essay Prompts & Tips", link:"https://www.fastweb.com/financial-aid/articles/scholarship-essay-tips", source:"Fastweb" },
+                { title:"How to Write a Winning Scholarship Essay", link:"https://www.collegeessayguy.com/blog/scholarship-essay", source:"College Essay Guy" },
+                { title:"Scholarship Essay Examples That Worked", link:"https://www.scholarships.com/financial-aid/college-scholarships/scholarship-essay-tips/", source:"Scholarships.com" },
+              ].map(r=>(
+                <a key={r.title} href={r.link} target="_blank" rel="noopener noreferrer" style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderTop:"1px solid #F8FAFC", textDecoration:"none" }}>
+                  <span style={{ fontSize:13, color:"#374151", fontWeight:500 }}>{r.title}</span>
+                  <span style={{ fontSize:12, color:"#047857", fontWeight:600, whiteSpace:"nowrap", marginLeft:12 }}>{r.source} →</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ScholarshipCard({ scholarship:s, saved, onSave, status, onStatus }) {
+  const [expanded, setExpanded] = useState(false);
+  const [showStatus, setShowStatus] = useState(false);
+  const daysLeft = Math.ceil((new Date(s.deadline)-new Date())/86400000);
+  const urgency = daysLeft<14?"#EF4444":daysLeft<45?"#F59E0B":"#22C55E";
+  const statusColor = status?STATUS_COLORS_SCHOLARSHIP[status]:null;
+  const CAT_COLORS_SCHOL = { merit:{ bg:"#EDE9FE", text:"#4C1D95" }, need:{ bg:"#FEE2E2", text:"#7F1D1D" }, stem:{ bg:"#E0F2FE", text:"#0C4A6E" }, arts:{ bg:"#FDF4FF", text:"#581C87" }, service:{ bg:"#DCFCE7", text:"#14532D" } };
+  const cc = CAT_COLORS_SCHOL[s.category]||{ bg:"#F1F5F9", text:"#475569" };
+  return (
+    <div style={{ background:"#fff", border:`1.5px solid ${status?STATUS_COLORS_SCHOLARSHIP[status]+"40":"#F1F5F9"}`, borderRadius:16, padding:"1.25rem", display:"flex", flexDirection:"column", gap:10, transition:"box-shadow .2s, transform .2s", position:"relative", overflow:"hidden" }}
+      onMouseEnter={e=>{ e.currentTarget.style.boxShadow="0 8px 32px rgba(0,0,0,0.10)"; e.currentTarget.style.transform="translateY(-2px)"; }}
+      onMouseLeave={e=>{ e.currentTarget.style.boxShadow="none"; e.currentTarget.style.transform="none"; }}>
+      {s.featured && <div style={{ position:"absolute", top:0, right:0, background:"linear-gradient(135deg,#047857,#059669)", color:"#fff", fontSize:10, fontWeight:700, padding:"4px 12px", borderBottomLeftRadius:10 }}>FEATURED</div>}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, flexWrap:"wrap" }}>
+        <span style={{ background:cc.bg, color:cc.text, fontSize:11, fontWeight:600, padding:"3px 10px", borderRadius:999, textTransform:"capitalize" }}>{s.category==="stem"?"STEM":s.category==="need"?"Need-Based":s.category}</span>
+        <div style={{ display:"flex", gap:5, alignItems:"center" }}>
+          <span style={{ fontSize:11, fontWeight:700, color:"#047857", background:"#DCFCE7", padding:"3px 8px", borderRadius:999 }}>{s.amountLabel}</span>
+          <button onClick={()=>onSave(s.id)} style={{ background:saved?"#EEF2FF":"#F8FAFC", border:`1.5px solid ${saved?"#6366F1":"#E2E8F0"}`, borderRadius:8, width:30, height:30, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:15, flexShrink:0 }}>
+            {saved?"🔖":"🏷️"}
+          </button>
+        </div>
+      </div>
+      {status && (
+        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+          <div style={{ width:8, height:8, borderRadius:"50%", background:statusColor, flexShrink:0 }} />
+          <span style={{ fontSize:12, fontWeight:600, color:statusColor }}>{status}</span>
+        </div>
+      )}
+      <div>
+        <h3 style={{ margin:"0 0 4px", fontSize:15, fontWeight:700, color:"#0F172A", lineHeight:1.4 }}>{s.title}</h3>
+        <p style={{ margin:"0 0 4px", fontSize:12, color:"#6366F1", fontWeight:500 }}>📌 {s.organization}</p>
+        <p style={{ margin:0, fontSize:13, color:"#64748B", lineHeight:1.5 }}>{s.description}</p>
+      </div>
+      <div style={{ display:"flex", flexWrap:"wrap", gap:8, fontSize:12, color:"#64748B" }}>
+        <span>📊 GPA: {s.gpaReq==="none"?"Any":s.gpaReq}</span>
+        <span>🎓 Major: {s.major}</span>
+        <span style={{ color:urgency, fontWeight:600 }}>⏰ {daysLeft>0?`${daysLeft}d left`:"Closed"}</span>
+      </div>
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+        <button onClick={()=>setExpanded(e=>!e)} style={{ flex:1, background:"#F8FAFC", border:"1px solid #E2E8F0", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:600, color:"#64748B", cursor:"pointer" }}>
+          {expanded?"▲ Hide details":"▼ View details"}
+        </button>
+        <button onClick={()=>setShowStatus(s=>!s)} style={{ background:status?`${statusColor}15`:"#F8FAFC", border:`1px solid ${status?statusColor+"50":"#E2E8F0"}`, borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:600, color:status||"#64748B", cursor:"pointer" }}>
+          📋 {status||"Track"}
+        </button>
+      </div>
+      {showStatus && (
+        <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+          {APP_STATUS_SCHOLARSHIP.map(st=>(
+            <button key={st} onClick={()=>{ onStatus(s.id, st===status?null:st); setShowStatus(false); }}
+              style={{ padding:"5px 12px", borderRadius:999, border:"1.5px solid", fontSize:12, fontWeight:600, cursor:"pointer", background:status===st?STATUS_COLORS_SCHOLARSHIP[st]:"#fff", color:status===st?"#fff":STATUS_COLORS_SCHOLARSHIP[st]||"#64748B", borderColor:STATUS_COLORS_SCHOLARSHIP[st]||"#E2E8F0" }}>{st}</button>
+          ))}
+        </div>
+      )}
+      {expanded && (
+        <div style={{ background:"#F8FAFC", borderRadius:10, padding:"0.75rem", fontSize:12 }}>
+          <div style={{ display:"grid", gap:6 }}>
+            {[["💰 Amount",s.amountLabel],["📊 Min GPA",s.gpaReq==="none"?"No requirement":s.gpaReq],["🎓 Field",s.major],["🌍 Location",s.location],["👥 For",s.demographics.includes("any")?"Anyone":s.demographics.join(", ")],["⏰ Deadline",new Date(s.deadline).toLocaleDateString()]].map(([label,val])=>(
+              <div key={label} style={{ display:"flex", justifyContent:"space-between", gap:8 }}>
+                <span style={{ color:"#94A3B8", fontWeight:600 }}>{label}</span>
+                <span style={{ color:"#0F172A", fontWeight:500, textAlign:"right", textTransform:"capitalize" }}>{val}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginTop:8 }}>
+            {s.tags.map(t=><span key={t} style={{ background:"#E2E8F0", color:"#475569", padding:"2px 8px", borderRadius:999, fontSize:11 }}>#{t}</span>)}
+          </div>
+        </div>
+      )}
+      <a href={s.link} target="_blank" rel="noopener noreferrer"
+        style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, background:"linear-gradient(135deg,#047857,#059669)", color:"#fff", fontSize:14, fontWeight:700, padding:"11px 16px", borderRadius:10, textDecoration:"none", boxShadow:"0 2px 8px rgba(5,150,105,0.3)", marginTop:2 }}
+        onMouseEnter={e=>{ e.currentTarget.style.opacity="0.88"; e.currentTarget.style.transform="translateY(-1px)"; }}
+        onMouseLeave={e=>{ e.currentTarget.style.opacity="1"; e.currentTarget.style.transform="none"; }}>
+        Apply Now
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+    </div>
+  );
+}
+
+
+// ============================================================
+// COMMUNITY PAGE V2 — with email gate, owner panel, seeded posts
+// ============================================================
+
+const SHEETS_URL_COMMUNITY = "https://script.google.com/macros/s/AKfycbxlRhz8GqMMwqsPoptLO0nEVvGDV7lHntJI5ZvnnsHO7kNWT48IRhhxfbA7z9ZYqjz1tQ/exec";
+
+const BANNED_WORDS = ["fuck","shit","ass","bitch","damn","crap","sex","porn","nude","kill","hate","stupid","idiot","retard","nigga","nigger","faggot","slut","whore","dick","cock","pussy","bastard","wtf","stfu","kys"];
+
+const validateUsername = (name) => {
+  const clean = name.toLowerCase().trim();
+  if (clean.length < 2) return "Username must be at least 2 characters";
+  if (clean.length > 20) return "Username must be under 20 characters";
+  if (!/^[a-zA-Z0-9_ ]+$/.test(clean)) return "Only letters, numbers, spaces and underscores allowed";
+  if (BANNED_WORDS.some(w => clean.includes(w))) return "That username isn't allowed — please choose another";
+  if (/^\d+$/.test(clean)) return "Username can't be only numbers";
+  return null;
+};
+
+const validateMessage = (msg) => {
+  const clean = msg.toLowerCase();
+  if (BANNED_WORDS.some(w => clean.includes(w))) return "Your message contains inappropriate content — please revise it";
+  if (msg.length > 500) return "Message too long — keep it under 500 characters";
+  return null;
+};
+
+const SEEDED_POSTS = [
+  { id:1, author:"Jordan L.", isOwner:false, category:"college", title:"What's your college list looking like for 2027?", content:"Rising senior here! I've been building my college list and would love to hear what other students are thinking. My list is pretty spread — some reaches like MIT and Stanford, matches like UCLA and UVA, and safeties like my state school. How do you decide how many schools to apply to?", upvotes:34, comments:[], timestamp:"3 hours ago", pinned:false },
+  { id:2, author:"Priya M.", isOwner:false, category:"opportunities", title:"Just found out about the Congressional App Challenge — anyone else applying?", content:"I was browsing StudentRise and discovered the Congressional App Challenge. I had no idea this existed! Has anyone here applied before? What kind of app did you build? I'm thinking of making something to help students track their college application deadlines.", upvotes:28, comments:[], timestamp:"5 hours ago", pinned:false },
+  { id:3, author:"Alex R.", isOwner:false, category:"studytips", title:"How I went from a 1200 to a 1450 on the SAT in 3 months", content:"I want to share what actually worked for me because there's so much bad advice out there. 1) Khan Academy official SAT prep — 30 min every single day, no exceptions. 2) Full practice test every Saturday morning under real conditions. 3) Review every wrong answer and understand WHY before moving on. The key is consistency not cramming.", upvotes:67, comments:[], timestamp:"1 day ago", pinned:false },
+  { id:4, author:"Marcus T.", isOwner:false, category:"college", title:"ED vs RD — is Early Decision actually worth the commitment?", content:"I'm torn on whether to apply Early Decision to my top choice. The acceptance rate boost is real but locking yourself in before financial aid feels risky. Has anyone been through this? Did you regret going ED or was it the right call? Especially curious from anyone who got a bad financial aid package.", upvotes:45, comments:[], timestamp:"1 day ago", pinned:false },
+  { id:5, author:"Sofia K.", isOwner:false, category:"opportunities", title:"What opportunity changed your high school experience the most?", content:"For me it was finding the YoungArts competition through StudentRise. I almost didn't apply because I thought my work wasn't good enough. I didn't win but the feedback from professional artists was incredible and completely changed how I approach my art. What about you all?", upvotes:52, comments:[], timestamp:"2 days ago", pinned:false },
+  { id:6, author:"Tyler B.", isOwner:false, category:"studytips", title:"Best free resources for AP Calculus BC?", content:"Taking AP Calc BC next year and want to start preparing over the summer. I know Khan Academy is great but are there other resources people have found helpful? Specifically looking for practice problems and video explanations. Any YouTube channels that are actually good?", upvotes:19, comments:[], timestamp:"2 days ago", pinned:false },
+  { id:7, author:"Aisha T.", isOwner:false, category:"general", title:"Introduce yourself! What grade are you in and what are you working toward?", content:"I'll start! I'm a junior in California working toward getting into a top CS program. I'm currently applying to summer research programs and working on a coding project I want to submit to the Congressional App Challenge. What about everyone else? Would love to connect with students who have similar goals!", upvotes:89, comments:[], timestamp:"3 days ago", pinned:true },
+  { id:8, author:"Ryan M.", isOwner:false, category:"college", title:"Common App personal statement tips — what actually worked?", content:"I'm starting my personal statement and feeling overwhelmed. Every college counselor says something different. Some say be vulnerable, others say show achievement, others say tell a story. What actually worked for people who got into competitive schools? Specifically looking for advice on picking a topic.", upvotes:41, comments:[], timestamp:"4 days ago", pinned:false },
+  { id:9, author:"Emma L.", isOwner:false, category:"opportunities", title:"Tips for standing out in competitive programs like RSI and PRIMES?", content:"I'm applying to several highly selective summer research programs this year. The acceptance rates are under 2% for some of them. Has anyone been through the process? How did you approach the research proposal? And is it worth applying to programs you're a long shot for?", upvotes:33, comments:[], timestamp:"5 days ago", pinned:false },
+  { id:10, author:"Daniel K.", isOwner:false, category:"studytips", title:"Does the Pomodoro technique actually work?", content:"My older brother swears by the Pomodoro technique — 25 min work, 5 min break. I tried it for a week and honestly wasn't sure if it helped or if I was just more conscious of my time. Do you use it? What study method has actually made a real difference for you?", upvotes:24, comments:[], timestamp:"6 days ago", pinned:false },
+];
+
+const SEEDED_STORIES = [
+  { id:1, author:"Sofia R.", isOwner:false, grade:"Grade 10", achievement:"Won the Congressional App Challenge and got featured in Teen Vogue", program:"Congressional App Challenge", tip:"Build something you actually care about and use yourself. Judges can tell when you're passionate about what you built.", featured:true, timestamp:"1 week ago" },
+  { id:2, author:"Marcus T.", isOwner:false, grade:"Grade 11", achievement:"Landed a paid NASA internship as a junior — one of the youngest ever selected", program:"NASA OSSI Internship", tip:"Don't self-reject before they do. I almost didn't apply because I thought my GPA wasn't good enough. Apply anyway.", featured:true, timestamp:"2 weeks ago" },
+  { id:3, author:"James K.", isOwner:false, grade:"Grade 12", achievement:"Got a full scholarship to MIT through Questbridge — $320,000 in total aid", program:"Questbridge College Prep Scholarship", tip:"Be completely honest in your essays. They want to know who you actually are not who you think they want you to be.", featured:true, timestamp:"3 weeks ago" },
+  { id:4, author:"Priya S.", isOwner:false, grade:"Grade 11", achievement:"Won the Regeneron Science Talent Search and $50,000 in prizes", program:"Regeneron Science Talent Search", tip:"Start your research project junior year not senior year. You need time to actually develop something meaningful.", featured:false, timestamp:"3 weeks ago" },
+  { id:5, author:"Aisha T.", isOwner:false, grade:"Grade 10", achievement:"Had her artwork displayed in the US Capitol after winning the Congressional Art Competition", program:"Congressional Art Competition", tip:"Submit your absolute best work not your most recent work. I almost submitted a newer piece but went with an older one I was prouder of.", featured:false, timestamp:"1 month ago" },
+  { id:6, author:"Tyler B.", isOwner:false, grade:"Grade 12", achievement:"Founded a nonprofit that's raised over $15,000 for STEM education in underserved schools", program:"Young Entrepreneurs Academy (YEA!)", tip:"Start small and local. My nonprofit started at just one school in my neighborhood. Think big but start small.", featured:false, timestamp:"1 month ago" },
+  { id:7, author:"Emma W.", isOwner:false, grade:"Grade 11", achievement:"Got into the Wharton Global Investment Competition and placed in the top 10 nationally", program:"Wharton Global High School Investment Competition", tip:"Read the Wall Street Journal every morning for a month before the competition. Understanding current events is more important than finance theory.", featured:false, timestamp:"1 month ago" },
+  { id:8, author:"Jordan M.", isOwner:false, grade:"Grade 9", achievement:"Won Girls Who Code Summer Program and got a mentorship offer from a Google engineer", program:"Girls Who Code Summer Immersion", tip:"Apply to everything even in 9th grade. I was surprised I got in as a freshman. They want passionate beginners not just advanced coders.", featured:false, timestamp:"6 weeks ago" },
+];
+
+const SEEDED_CHAT = [
+  { id:1, author:"Aisha T.", isOwner:false, message:"Just found a coding scholarship on here I had never heard of before. This platform is actually amazing 🙌", timestamp:"5 min ago" },
+  { id:2, author:"Ryan M.", isOwner:false, message:"Same! I found 3 opportunities I qualify for that I had no idea existed", timestamp:"4 min ago" },
+  { id:3, author:"Emma L.", isOwner:false, message:"Does anyone know if the NASA internship requires a teacher recommendation?", timestamp:"2 min ago" },
+  { id:4, author:"Marcus T.", isOwner:false, message:"@Emma yes it does — two actually. Start asking your teachers early!", timestamp:"1 min ago" },
+];
+
+const COMMUNITY_RULES = [
+  "Be respectful — treat everyone the way you want to be treated",
+  "No hate speech, discrimination, or bullying of any kind",
+  "No sharing personal information like phone numbers or addresses",
+  "No spam, self-promotion, or irrelevant links",
+  "Keep it relevant to students, education, and opportunities",
+  "No inappropriate or explicit content of any kind",
+  "No political arguments or divisive topics",
+  "English only so everyone can be moderated fairly",
+  "Report problems using the Feedback tab — don't retaliate",
+  "Violations result in removal from the community",
+];
+
+const FORUM_CATEGORIES_C = ["all","college","opportunities","studytips","general"];
+const CAT_COLORS_C = {
+  college:{ bg:"#EDE9FE", text:"#4C1D95", dot:"#7C3AED" },
+  opportunities:{ bg:"#DCFCE7", text:"#14532D", dot:"#16A34A" },
+  studytips:{ bg:"#FEF3C7", text:"#92400E", dot:"#F59E0B" },
+  general:{ bg:"#E0F2FE", text:"#0C4A6E", dot:"#0EA5E9" },
+};
+
+function FounderBadge() {
+  return (
+    <span style={{ background:"linear-gradient(135deg,#312E81,#4338CA)", color:"#fff", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:999, letterSpacing:"0.04em", display:"inline-flex", alignItems:"center", gap:3, boxShadow:"0 2px 8px rgba(49,46,129,0.4)", flexShrink:0 }}>
+      👑 FOUNDER
+    </span>
+  );
+}
+
+function AuthorName({ name, isOwner }) {
+  if (!isOwner) return <span style={{ fontSize:13, fontWeight:600, color:"#374151" }}>{name}</span>;
+  return <span style={{ fontSize:13, fontWeight:700, background:"linear-gradient(135deg,#312E81,#6366F1)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>{name}</span>;
+}
+
+function CommunityPage({ isPro, onUpgrade }) {
+  const [stage, setStage] = useState("enter"); // "enter" | "rules" | "community"
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [rulesAccepted, setRulesAccepted] = useState(false);
+  const [tab, setTab] = useState("forum");
+  const [forumCat, setForumCat] = useState("all");
+  const [posts, setPosts] = useState(SEEDED_POSTS);
+  const [chat, setChat] = useState(SEEDED_CHAT);
+  const [stories, setStories] = useState(SEEDED_STORIES);
+  const [chatMsg, setChatMsg] = useState("");
+  const [upvoted, setUpvoted] = useState({});
+  const [expandedPost, setExpandedPost] = useState(null);
+  const [newComment, setNewComment] = useState({});
+  const [showNewPost, setShowNewPost] = useState(false);
+  const [newPost, setNewPost] = useState({ title:"", content:"", category:"general" });
+  const [showStoryForm, setShowStoryForm] = useState(false);
+  const [newStory, setNewStory] = useState({ achievement:"", program:"", tip:"", grade:"" });
+  const [feedback, setFeedback] = useState({ type:"suggestion", message:"", email:"" });
+  const [feedbackSent, setFeedbackSent] = useState(false);
+  const [postError, setPostError] = useState("");
+  const [chatError, setChatError] = useState("");
+
+  // Owner panel
+  const [ownerClickCount, setOwnerClickCount] = useState(0);
+  const [showOwnerLogin, setShowOwnerLogin] = useState(false);
+  const [ownerPassword, setOwnerPassword] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
+  const [ownerError, setOwnerError] = useState("");
+  const [bannedUsers, setBannedUsers] = useState([]);
+
+  const OWNER_PASSWORD = import.meta.env.VITE_OWNER_PASSWORD || "studentrise2026";
+  const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  const displayName = isOwner ? "StudentRise" : username;
+
+  const handleLogoClick = () => {
+    const newCount = ownerClickCount + 1;
+    setOwnerClickCount(newCount);
+    if (newCount >= 5) { setShowOwnerLogin(true); setOwnerClickCount(0); }
+  };
+
+  const handleOwnerLogin = () => {
+    if (ownerPassword === OWNER_PASSWORD) { setIsOwner(true); setShowOwnerLogin(false); setOwnerPassword(""); setOwnerError(""); }
+    else { setOwnerError("Incorrect password"); }
+  };
+
+  const handleEnter = async () => {
+    const uError = validateUsername(username);
+    if (uError) { setUsernameError(uError); return; }
+    if (!email) { setEmailError("Email is required to join the community"); return; }
+    if (!isValidEmail(email)) { setEmailError("Please enter a valid email address"); return; }
+    setUsernameError(""); setEmailError("");
+    try {
+      await fetch(SHEETS_URL_COMMUNITY, { method:"POST", mode:"no-cors", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ type:"community_member", username, email, timestamp:new Date().toLocaleString() }) });
+    } catch(e) {}
+    setStage("rules");
+  };
+
+  const filteredPosts = posts.filter(p => (forumCat==="all"||p.category===forumCat) && !bannedUsers.includes(p.author));
+  const pinnedPosts = filteredPosts.filter(p=>p.pinned);
+  const regularPosts = filteredPosts.filter(p=>!p.pinned);
+  const featuredStories = stories.filter(s=>s.featured && !bannedUsers.includes(s.author));
+  const regularStories = stories.filter(s=>!s.featured && !bannedUsers.includes(s.author));
+
+  const sendChat = () => {
+    if (!chatMsg.trim()) return;
+    const error = validateMessage(chatMsg);
+    if (error) { setChatError(error); return; }
+    setChatError("");
+    setChat(c=>[...c, { id:Date.now(), author:displayName, isOwner, message:chatMsg.trim(), timestamp:"just now" }]);
+    setChatMsg("");
+  };
+
+  const toggleUpvote = (id) => {
+    setUpvoted(u=>({ ...u,[id]:!u[id] }));
+    setPosts(p=>p.map(post=>post.id===id?{ ...post, upvotes:post.upvotes+(upvoted[id]?-1:1) }:post));
+  };
+
+  const addComment = (postId) => {
+    if (!newComment[postId]?.trim()) return;
+    const error = validateMessage(newComment[postId]);
+    if (error) return;
+    setPosts(p=>p.map(post=>post.id===postId?{ ...post, comments:[...(post.comments||[]),{ id:Date.now(), author:displayName, isOwner, text:newComment[postId], timestamp:"just now" }], commentCount:(post.commentCount||0)+1 }:post));
+    setNewComment(c=>({ ...c,[postId]:"" }));
+  };
+
+  const submitPost = () => {
+    if (!newPost.title.trim()||!newPost.content.trim()) return;
+    const error = validateMessage(newPost.content) || validateMessage(newPost.title);
+    if (error) { setPostError(error); return; }
+    setPostError("");
+    setPosts(p=>[{ id:Date.now(), author:displayName, isOwner, category:newPost.category, title:newPost.title, content:newPost.content, upvotes:0, comments:[], timestamp:"just now", pinned:false }, ...p]);
+    setNewPost({ title:"", content:"", category:"general" });
+    setShowNewPost(false);
+  };
+
+  const submitStory = () => {
+    if (!newStory.achievement.trim()) return;
+    setStories(s=>[{ id:Date.now(), author:displayName, isOwner, grade:newStory.grade, achievement:newStory.achievement, program:newStory.program, tip:newStory.tip, featured:isOwner, timestamp:"just now" }, ...s]);
+    setNewStory({ achievement:"", program:"", tip:"", grade:"" });
+    setShowStoryForm(false);
+  };
+
+  const submitFeedback = async () => {
+    if (!feedback.message.trim()) return;
+    try {
+      await fetch(SHEETS_URL_COMMUNITY, { method:"POST", mode:"no-cors", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ type:"feedback", feedbackType:feedback.type, message:feedback.message, email:feedback.email||email, username, timestamp:new Date().toLocaleString() }) });
+    } catch(e) {}
+    setFeedbackSent(true);
+  };
+
+  const inp = { width:"100%", padding:"10px 12px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:14, outline:"none", boxSizing:"border-box", fontFamily:"inherit" };
+
+  // ENTER SCREEN
+  if (stage==="enter") return (
+    <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#F8FAFC", minHeight:"100vh" }}>
+      <div style={{ background:"linear-gradient(135deg,#0F172A,#1E293B,#312E81)", padding:"2.5rem 1.5rem 3.5rem", textAlign:"center" }}>
+        <div onClick={handleLogoClick} style={{ cursor:"default" }}>
+          <span style={{ background:"rgba(99,102,241,0.2)", color:"#A5B4FC", fontSize:12, fontWeight:700, padding:"4px 14px", borderRadius:999, display:"inline-block", marginBottom:14 }}>STUDENT COMMUNITY</span>
+          <h1 style={{ margin:"0 0 10px", fontSize:"clamp(24px,5vw,42px)", fontWeight:800, color:"#fff" }}>Join the Community 👥</h1>
+          <p style={{ margin:0, color:"rgba(255,255,255,0.6)", fontSize:15 }}>Connect with students, share wins, and get advice</p>
+        </div>
+      </div>
+      <div style={{ maxWidth:420, margin:"40px auto", padding:"0 1rem" }}>
+        <div style={{ background:"#fff", borderRadius:20, padding:"2rem", boxShadow:"0 4px 24px rgba(0,0,0,0.08)" }}>
+          <div style={{ fontSize:48, marginBottom:16, textAlign:"center" }}>👋</div>
+          <h2 style={{ margin:"0 0 8px", fontSize:20, fontWeight:700, color:"#0F172A", textAlign:"center" }}>Who are you?</h2>
+          <p style={{ margin:"0 0 20px", fontSize:13, color:"#64748B", textAlign:"center" }}>Your info stays private — we just need it to keep the community safe.</p>
+          <div style={{ display:"grid", gap:12, marginBottom:16 }}>
+            <div>
+              <label style={{ fontSize:13, fontWeight:600, color:"#374151", display:"block", marginBottom:4 }}>Display name *</label>
+              <input value={username} onChange={e=>{ setUsername(e.target.value); setUsernameError(""); }} onKeyDown={e=>e.key==="Enter"&&handleEnter()} placeholder="e.g. Alex, Priya, StudentAce..." style={inp} />
+              {usernameError && <p style={{ fontSize:12, color:"#EF4444", margin:"4px 0 0", fontWeight:500 }}>⚠️ {usernameError}</p>}
+            </div>
+            <div>
+              <label style={{ fontSize:13, fontWeight:600, color:"#374151", display:"block", marginBottom:4 }}>Email address *</label>
+              <input value={email} onChange={e=>{ setEmail(e.target.value); setEmailError(""); }} type="email" placeholder="your@email.com" style={inp} />
+              {emailError && <p style={{ fontSize:12, color:"#EF4444", margin:"4px 0 0", fontWeight:500 }}>⚠️ {emailError}</p>}
+              <p style={{ fontSize:11, color:"#94A3B8", margin:"4px 0 0" }}>Your email is private and only used for account safety</p>
+            </div>
+          </div>
+          <button onClick={handleEnter} style={{ width:"100%", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"12px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer" }}>
+            Continue →
+          </button>
+        </div>
+      </div>
+      {showOwnerLogin && (
+        <div onClick={e=>e.target===e.currentTarget&&setShowOwnerLogin(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:999 }}>
+          <div style={{ background:"#fff", borderRadius:16, padding:"1.5rem", width:320 }}>
+            <h3 style={{ margin:"0 0 12px", fontSize:16, fontWeight:700 }}>Owner Access</h3>
+            <input type="password" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleOwnerLogin()} placeholder="Enter owner password" style={{ ...inp, marginBottom:8 }} />
+            {ownerError && <p style={{ fontSize:12, color:"#EF4444", margin:"0 0 8px" }}>{ownerError}</p>}
+            <button onClick={handleOwnerLogin} style={{ width:"100%", background:"linear-gradient(135deg,#312E81,#4338CA)", color:"#fff", border:"none", padding:"10px", borderRadius:10, fontWeight:700, cursor:"pointer" }}>Unlock</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  // RULES SCREEN
+  if (stage==="rules") return (
+    <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#F8FAFC", minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem" }}>
+      <div style={{ background:"#fff", borderRadius:20, padding:"2rem", maxWidth:480, width:"100%", boxShadow:"0 4px 24px rgba(0,0,0,0.08)" }}>
+        <div style={{ fontSize:40, marginBottom:12, textAlign:"center" }}>📋</div>
+        <h2 style={{ margin:"0 0 6px", fontSize:20, fontWeight:700, color:"#0F172A", textAlign:"center" }}>Community Rules</h2>
+        <p style={{ margin:"0 0 16px", fontSize:13, color:"#64748B", textAlign:"center" }}>Please read and accept before joining</p>
+        <div style={{ display:"grid", gap:8, marginBottom:20 }}>
+          {COMMUNITY_RULES.map((rule,i)=>(
+            <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start", padding:"8px 12px", background:"#F8FAFC", borderRadius:8 }}>
+              <span style={{ fontSize:12, fontWeight:700, color:"#6366F1", flexShrink:0, marginTop:1 }}>{i+1}.</span>
+              <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.4 }}>{rule}</p>
+            </div>
+          ))}
+        </div>
+        <label style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer", marginBottom:16 }}>
+          <input type="checkbox" checked={rulesAccepted} onChange={e=>setRulesAccepted(e.target.checked)} style={{ width:18, height:18, accentColor:"#6366F1", flexShrink:0 }} />
+          <span style={{ fontSize:13, color:"#374151", fontWeight:500 }}>I have read and agree to follow the community rules</span>
+        </label>
+        <button onClick={()=>rulesAccepted&&setStage("community")} disabled={!rulesAccepted}
+          style={{ width:"100%", background:!rulesAccepted?"#F1F5F9":"linear-gradient(135deg,#6366F1,#8B5CF6)", color:!rulesAccepted?"#94A3B8":"#fff", border:"none", padding:"12px", borderRadius:10, fontWeight:700, fontSize:15, cursor:!rulesAccepted?"not-allowed":"pointer" }}>
+          Enter Community →
+        </button>
+      </div>
+    </div>
+  );
+
+  // COMMUNITY SCREEN
+  const tabs = [
+    { id:"forum", icon:"💬", label:"Forum" },
+    { id:"chat", icon:"⚡", label:"Live Chat" },
+    { id:"stories", icon:"🏆", label:"Success Stories" },
+    { id:"feedback", icon:"📣", label:"Feedback" },
+  ];
+
+  return (
+    <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#F8FAFC", minHeight:"100vh" }}>
+      <div style={{ background:"linear-gradient(135deg,#0F172A,#1E293B,#312E81)", padding:"2.5rem 1.5rem 3.5rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+        <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle at 20% 50%, rgba(99,102,241,0.15) 0%, transparent 50%)" }} />
+        <div style={{ position:"relative" }}>
+          <div onClick={handleLogoClick} style={{ cursor:"default", display:"inline-block", marginBottom:14 }}>
+            <span style={{ background:"rgba(99,102,241,0.2)", color:"#A5B4FC", fontSize:12, fontWeight:700, padding:"4px 14px", borderRadius:999 }}>STUDENT COMMUNITY</span>
+          </div>
+          <h1 style={{ margin:"0 0 10px", fontSize:"clamp(24px,5vw,42px)", fontWeight:800, color:"#fff" }}>Community 👥</h1>
+          <p style={{ margin:"0 0 16px", color:"rgba(255,255,255,0.65)", fontSize:15, maxWidth:480, marginLeft:"auto", marginRight:"auto" }}>Connect with students, share wins, get advice, and grow together</p>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:10, background:"rgba(255,255,255,0.08)", borderRadius:12, padding:"8px 16px" }}>
+            <span style={{ fontSize:13, color:"rgba(255,255,255,0.7)" }}>Logged in as</span>
+            <span style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{displayName}</span>
+            {isOwner && <FounderBadge />}
+          </div>
+          {isOwner && (
+            <div style={{ marginTop:10, display:"inline-flex", alignItems:"center", gap:8, background:"rgba(49,46,129,0.4)", borderRadius:10, padding:"6px 14px" }}>
+              <span style={{ fontSize:12, color:"#A5B4FC", fontWeight:600 }}>👑 Owner mode active — you can delete and moderate all content</span>
+              <button onClick={()=>setIsOwner(false)} style={{ background:"none", border:"none", color:"#EF4444", fontSize:12, fontWeight:600, cursor:"pointer" }}>Exit</button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div style={{ maxWidth:960, margin:"0 auto", padding:"0 1rem 3rem" }}>
+        <div style={{ display:"flex", gap:4, background:"#fff", borderRadius:16, border:"1.5px solid #F1F5F9", padding:4, marginTop:16, boxShadow:"0 4px 24px rgba(0,0,0,0.07)", marginBottom:24, overflowX:"auto" }}>
+          {tabs.map(t=>(
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{ padding:"9px 18px", borderRadius:10, border:"none", fontSize:13, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:5, whiteSpace:"nowrap", flex:1, justifyContent:"center", background:tab===t.id?"linear-gradient(135deg,#6366F1,#8B5CF6)":"transparent", color:tab===t.id?"#fff":"#64748B", boxShadow:tab===t.id?"0 2px 8px rgba(99,102,241,0.3)":"none" }}>
+              {t.icon} {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* FORUM */}
+        {tab==="forum" && (
+          <div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16, flexWrap:"wrap", gap:10 }}>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                {FORUM_CATEGORIES_C.map(c=>(
+                  <button key={c} onClick={()=>setForumCat(c)} style={{ padding:"6px 14px", borderRadius:999, border:"1.5px solid", fontSize:12, fontWeight:500, cursor:"pointer", background:forumCat===c?"#6366F1":"#fff", color:forumCat===c?"#fff":"#64748B", borderColor:forumCat===c?"#6366F1":"#E2E8F0", textTransform:"capitalize" }}>{c==="all"?"All":c}</button>
+                ))}
+              </div>
+              {isPro || isOwner ? (
+                <button onClick={()=>setShowNewPost(true)} style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"9px 18px", borderRadius:10, fontWeight:700, fontSize:13, cursor:"pointer" }}>✏️ New Post</button>
+              ) : (
+                <button onClick={onUpgrade} style={{ background:"#F8FAFC", border:"1.5px solid #E2E8F0", color:"#64748B", padding:"9px 18px", borderRadius:10, fontWeight:600, fontSize:13, cursor:"pointer" }}>🔒 Pro to post</button>
+              )}
+            </div>
+
+            {showNewPost && (
+              <div style={{ background:"#fff", border:"1.5px solid #6366F1", borderRadius:16, padding:"1.25rem", marginBottom:16 }}>
+                <h3 style={{ margin:"0 0 12px", fontSize:15, fontWeight:700, color:"#0F172A" }}>Create a new post</h3>
+                {postError && <p style={{ fontSize:12, color:"#EF4444", margin:"0 0 8px", fontWeight:500 }}>⚠️ {postError}</p>}
+                <div style={{ display:"grid", gap:10 }}>
+                  <input style={{ ...inp, fontSize:14 }} value={newPost.title} onChange={e=>setNewPost(p=>({...p,title:e.target.value}))} placeholder="Post title..." />
+                  <select style={{ ...inp, fontSize:14 }} value={newPost.category} onChange={e=>setNewPost(p=>({...p,category:e.target.value}))}>
+                    {["general","college","opportunities","studytips"].map(c=><option key={c}>{c}</option>)}
+                  </select>
+                  <textarea style={{ ...inp, minHeight:100, resize:"vertical", fontSize:14 }} value={newPost.content} onChange={e=>setNewPost(p=>({...p,content:e.target.value}))} placeholder="Share your thoughts, questions, or advice..." />
+                  <div style={{ display:"flex", gap:8 }}>
+                    <button onClick={submitPost} style={{ flex:1, background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"10px", borderRadius:10, fontWeight:700, fontSize:13, cursor:"pointer" }}>Post</button>
+                    <button onClick={()=>{ setShowNewPost(false); setPostError(""); }} style={{ padding:"10px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"#fff", fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {pinnedPosts.length>0 && (
+              <div style={{ marginBottom:16 }}>
+                <p style={{ margin:"0 0 8px", fontSize:12, fontWeight:700, color:"#6366F1", textTransform:"uppercase", letterSpacing:"0.06em" }}>📌 Pinned</p>
+                {pinnedPosts.map(post=><PostCard key={post.id} post={post} isOwner={isOwner} upvoted={upvoted} onUpvote={toggleUpvote} expanded={expandedPost===post.id} onExpand={()=>setExpandedPost(expandedPost===post.id?null:post.id)} newComment={newComment[post.id]||""} onCommentChange={val=>setNewComment(c=>({...c,[post.id]:val}))} onAddComment={()=>addComment(post.id)} onDelete={id=>setPosts(p=>p.filter(x=>x.id!==id))} onPin={id=>setPosts(p=>p.map(x=>x.id===id?{...x,pinned:!x.pinned}:x))} onBan={author=>setBannedUsers(b=>[...b,author])} />)}
+              </div>
+            )}
+
+            <div style={{ display:"grid", gap:12 }}>
+              {regularPosts.map(post=><PostCard key={post.id} post={post} isOwner={isOwner} upvoted={upvoted} onUpvote={toggleUpvote} expanded={expandedPost===post.id} onExpand={()=>setExpandedPost(expandedPost===post.id?null:post.id)} newComment={newComment[post.id]||""} onCommentChange={val=>setNewComment(c=>({...c,[post.id]:val}))} onAddComment={()=>addComment(post.id)} onDelete={id=>setPosts(p=>p.filter(x=>x.id!==id))} onPin={id=>setPosts(p=>p.map(x=>x.id===id?{...x,pinned:!x.pinned}:x))} onBan={author=>setBannedUsers(b=>[...b,author])} />)}
+            </div>
+          </div>
+        )}
+
+        {/* LIVE CHAT */}
+        {tab==="chat" && (
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 260px", gap:16, alignItems:"start" }}>
+            <div style={{ background:"#fff", border:"1.5px solid #F1F5F9", borderRadius:16, overflow:"hidden" }}>
+              <div style={{ padding:"12px 16px", borderBottom:"1px solid #F1F5F9", display:"flex", alignItems:"center", gap:8 }}>
+                <div style={{ width:8, height:8, borderRadius:"50%", background:"#22C55E", boxShadow:"0 0 6px #22C55E" }} />
+                <span style={{ fontSize:13, fontWeight:600, color:"#0F172A" }}>Live Chat</span>
+              </div>
+              <div style={{ height:400, overflowY:"auto", padding:"12px 16px", display:"flex", flexDirection:"column", gap:10 }}>
+                {chat.filter(m=>!bannedUsers.includes(m.author)).map(m=>(
+                  <div key={m.id} style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
+                    <div style={{ width:30, height:30, borderRadius:"50%", background:m.isOwner?"linear-gradient(135deg,#312E81,#4338CA)":"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:13, flexShrink:0 }}>{m.author[0]}</div>
+                    <div style={{ flex:1, background:m.isOwner?"linear-gradient(135deg,#EEF2FF,#E0E7FF)":"#F8FAFC", borderRadius:10, padding:"8px 12px", border:m.isOwner?"1px solid #C7D2FE":"1px solid #F1F5F9" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3, flexWrap:"wrap" }}>
+                        <AuthorName name={m.author} isOwner={m.isOwner} />
+                        {m.isOwner && <FounderBadge />}
+                        <span style={{ fontSize:10, color:"#94A3B8", marginLeft:"auto" }}>{m.timestamp}</span>
+                        {isOwner && !m.isOwner && <button onClick={()=>setChat(c=>c.filter(x=>x.id!==m.id))} style={{ background:"none", border:"none", color:"#EF4444", cursor:"pointer", fontSize:13, padding:"0 2px" }}>🗑️</button>}
+                        {isOwner && !m.isOwner && <button onClick={()=>setBannedUsers(b=>[...b,m.author])} style={{ background:"none", border:"none", color:"#F59E0B", cursor:"pointer", fontSize:13, padding:"0 2px" }}>🚫</button>}
+                      </div>
+                      <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.5 }}>{m.message}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {chatError && <p style={{ fontSize:12, color:"#EF4444", margin:"0 16px", fontWeight:500 }}>⚠️ {chatError}</p>}
+              <div style={{ padding:"12px 16px", borderTop:"1px solid #F1F5F9", display:"flex", gap:8 }}>
+                <input value={chatMsg} onChange={e=>{ setChatMsg(e.target.value); setChatError(""); }} onKeyDown={e=>e.key==="Enter"&&sendChat()} placeholder="Type a message..." style={{ flex:1, padding:"10px 12px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", fontFamily:"inherit" }} />
+                <button onClick={sendChat} disabled={!chatMsg.trim()} style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"10px 16px", borderRadius:10, fontWeight:600, fontSize:13, cursor:!chatMsg.trim()?"not-allowed":"pointer", opacity:!chatMsg.trim()?0.5:1 }}>Send</button>
+              </div>
+            </div>
+            <div style={{ background:"#fff", border:"1.5px solid #F1F5F9", borderRadius:14, padding:"1rem" }}>
+              <p style={{ margin:"0 0 10px", fontSize:13, fontWeight:700, color:"#0F172A" }}>👥 Active users</p>
+              {[...new Set(chat.map(m=>m.author))].slice(0,6).map(name=>(
+                <div key={name} style={{ display:"flex", alignItems:"center", gap:8, padding:"6px 0", borderTop:"1px solid #F8FAFC" }}>
+                  <div style={{ width:8, height:8, borderRadius:"50%", background:"#22C55E", flexShrink:0 }} />
+                  <AuthorName name={name} isOwner={name==="StudentRise"} />
+                  {name==="StudentRise" && <FounderBadge />}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* SUCCESS STORIES */}
+        {tab==="stories" && (
+          <div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16, flexWrap:"wrap", gap:10 }}>
+              <p style={{ margin:0, fontSize:13, color:"#64748B" }}>Real wins from real students 🏆</p>
+              <button onClick={()=>setShowStoryForm(true)} style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"9px 18px", borderRadius:10, fontWeight:700, fontSize:13, cursor:"pointer" }}>+ Share Your Win</button>
+            </div>
+            {showStoryForm && (
+              <div style={{ background:"#fff", border:"1.5px solid #6366F1", borderRadius:16, padding:"1.25rem", marginBottom:16 }}>
+                <h3 style={{ margin:"0 0 12px", fontSize:15, fontWeight:700, color:"#0F172A" }}>Share your success story 🎉</h3>
+                <div style={{ display:"grid", gap:10 }}>
+                  <input style={{ ...inp, fontSize:14 }} value={newStory.grade} onChange={e=>setNewStory(s=>({...s,grade:e.target.value}))} placeholder="Your grade (e.g. Grade 11)" />
+                  <input style={{ ...inp, fontSize:14 }} value={newStory.achievement} onChange={e=>setNewStory(s=>({...s,achievement:e.target.value}))} placeholder="Your achievement..." />
+                  <input style={{ ...inp, fontSize:14 }} value={newStory.program} onChange={e=>setNewStory(s=>({...s,program:e.target.value}))} placeholder="Program or opportunity (optional)" />
+                  <textarea style={{ ...inp, minHeight:80, resize:"vertical", fontSize:14 }} value={newStory.tip} onChange={e=>setNewStory(s=>({...s,tip:e.target.value}))} placeholder="One tip for other students... (optional)" />
+                  <div style={{ display:"flex", gap:8 }}>
+                    <button onClick={submitStory} style={{ flex:1, background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"10px", borderRadius:10, fontWeight:700, fontSize:13, cursor:"pointer" }}>Share Story</button>
+                    <button onClick={()=>setShowStoryForm(false)} style={{ padding:"10px 16px", borderRadius:10, border:"1px solid #E2E8F0", background:"#fff", fontSize:13, cursor:"pointer", color:"#64748B" }}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {featuredStories.length>0 && (
+              <>
+                <p style={{ margin:"0 0 10px", fontSize:12, fontWeight:700, color:"#F59E0B", textTransform:"uppercase", letterSpacing:"0.08em" }}>⭐ Featured Stories</p>
+                <div style={{ display:"grid", gap:12, marginBottom:20 }}>
+                  {featuredStories.map(s=><StoryCard key={s.id} story={s} isOwner={isOwner} onDelete={id=>setStories(st=>st.filter(x=>x.id!==id))} onFeature={id=>setStories(st=>st.map(x=>x.id===id?{...x,featured:!x.featured}:x))} onBan={author=>setBannedUsers(b=>[...b,author])} />)}
+                </div>
+              </>
+            )}
+            {regularStories.length>0 && (
+              <>
+                <p style={{ margin:"0 0 10px", fontSize:12, fontWeight:700, color:"#64748B", textTransform:"uppercase", letterSpacing:"0.08em" }}>All Stories</p>
+                <div style={{ display:"grid", gap:12 }}>
+                  {regularStories.map(s=><StoryCard key={s.id} story={s} isOwner={isOwner} onDelete={id=>setStories(st=>st.filter(x=>x.id!==id))} onFeature={id=>setStories(st=>st.map(x=>x.id===id?{...x,featured:!x.featured}:x))} onBan={author=>setBannedUsers(b=>[...b,author])} />)}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* FEEDBACK */}
+        {tab==="feedback" && (
+          <div style={{ maxWidth:600, margin:"0 auto" }}>
+            {feedbackSent ? (
+              <div style={{ textAlign:"center", padding:"3rem" }}>
+                <div style={{ fontSize:56, marginBottom:16 }}>🙏</div>
+                <h2 style={{ margin:"0 0 8px", fontSize:22, fontWeight:800, color:"#0F172A" }}>Thank you!</h2>
+                <p style={{ color:"#64748B", margin:"0 0 20px" }}>We read every single submission and use your feedback to improve StudentRise.</p>
+                <button onClick={()=>setFeedbackSent(false)} style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"10px 24px", borderRadius:10, fontWeight:600, cursor:"pointer" }}>Submit another</button>
+              </div>
+            ) : (
+              <div>
+                <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", border:"1px solid #C7D2FE", borderRadius:14, padding:"1rem", marginBottom:20, display:"flex", gap:10 }}>
+                  <span style={{ fontSize:20 }}>👂</span>
+                  <p style={{ margin:0, fontSize:13, color:"#4338CA", fontWeight:500 }}>We read every single submission. Your feedback helps make StudentRise better for everyone!</p>
+                </div>
+                <div style={{ display:"grid", gap:12 }}>
+                  <div>
+                    <p style={{ margin:"0 0 8px", fontSize:13, fontWeight:700, color:"#374151" }}>Type of feedback</p>
+                    <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                      {[["suggestion","💡 Suggestion"],["bug","🐛 Bug Report"],["problem","⚠️ Problem"],["compliment","❤️ Compliment"],["other","💬 Other"]].map(([val,label])=>(
+                        <button key={val} onClick={()=>setFeedback(f=>({...f,type:val}))} style={{ padding:"8px 16px", borderRadius:999, border:"1.5px solid", fontSize:13, fontWeight:500, cursor:"pointer", background:feedback.type===val?"#6366F1":"#fff", color:feedback.type===val?"#fff":"#64748B", borderColor:feedback.type===val?"#6366F1":"#E2E8F0" }}>{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize:13, fontWeight:600, color:"#374151", display:"block", marginBottom:6 }}>Your message *</label>
+                    <textarea value={feedback.message} onChange={e=>setFeedback(f=>({...f,message:e.target.value}))} placeholder="Tell us what you think, what's broken, or what you'd love to see..." style={{ ...inp, minHeight:120, resize:"vertical" }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize:13, fontWeight:600, color:"#374151", display:"block", marginBottom:6 }}>Your email (optional — if you want a reply)</label>
+                    <input style={inp} type="email" value={feedback.email} onChange={e=>setFeedback(f=>({...f,email:e.target.value}))} placeholder="your@email.com" />
+                  </div>
+                  <button onClick={submitFeedback} disabled={!feedback.message.trim()}
+                    style={{ background:!feedback.message.trim()?"#F1F5F9":"linear-gradient(135deg,#6366F1,#8B5CF6)", color:!feedback.message.trim()?"#94A3B8":"#fff", border:"none", padding:"12px", borderRadius:10, fontWeight:700, fontSize:15, cursor:!feedback.message.trim()?"not-allowed":"pointer" }}>
+                    Send Feedback 🚀
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {showOwnerLogin && (
+        <div onClick={e=>e.target===e.currentTarget&&setShowOwnerLogin(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:999 }}>
+          <div style={{ background:"#fff", borderRadius:16, padding:"1.5rem", width:320 }}>
+            <h3 style={{ margin:"0 0 12px", fontSize:16, fontWeight:700 }}>Owner Access</h3>
+            <input type="password" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleOwnerLogin()} placeholder="Enter owner password" style={{ ...inp, marginBottom:8 }} />
+            {ownerError && <p style={{ fontSize:12, color:"#EF4444", margin:"0 0 8px" }}>{ownerError}</p>}
+            <button onClick={handleOwnerLogin} style={{ width:"100%", background:"linear-gradient(135deg,#312E81,#4338CA)", color:"#fff", border:"none", padding:"10px", borderRadius:10, fontWeight:700, cursor:"pointer" }}>Unlock</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PostCard({ post, isOwner, upvoted, onUpvote, expanded, onExpand, newComment, onCommentChange, onAddComment, onDelete, onPin, onBan }) {
+  const cc = CAT_COLORS_C[post.category]||{ bg:"#F1F5F9", text:"#475569" };
+  const comments = post.comments||[];
+  return (
+    <div style={{ background:"#fff", border:`1.5px solid ${post.pinned?"#6366F1":post.isOwner?"#E0E7FF":"#F1F5F9"}`, borderRadius:16, padding:"1.25rem", boxShadow:post.pinned?"0 2px 12px rgba(99,102,241,0.1)":"none" }}>
+      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:8, marginBottom:10, flexWrap:"wrap" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+          <div style={{ width:32, height:32, borderRadius:"50%", background:post.isOwner?"linear-gradient(135deg,#312E81,#4338CA)":"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:14, flexShrink:0 }}>{post.author[0]}</div>
+          <AuthorName name={post.author} isOwner={post.isOwner} />
+          {post.isOwner && <FounderBadge />}
+          {post.pinned && <span style={{ fontSize:11, color:"#6366F1", fontWeight:700 }}>📌 Pinned</span>}
+          <span style={{ fontSize:11, color:"#94A3B8" }}>{post.timestamp}</span>
+        </div>
+        <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+          <span style={{ background:cc.bg, color:cc.text, fontSize:11, fontWeight:600, padding:"2px 8px", borderRadius:999, textTransform:"capitalize" }}>{post.category}</span>
+          {isOwner && (
+            <>
+              <button onClick={()=>onPin(post.id)} title="Pin/unpin" style={{ background:"none", border:"none", cursor:"pointer", fontSize:14, padding:"2px" }}>📌</button>
+              <button onClick={()=>onBan(post.author)} title="Ban user" style={{ background:"none", border:"none", cursor:"pointer", fontSize:14, padding:"2px" }}>🚫</button>
+              <button onClick={()=>onDelete(post.id)} title="Delete post" style={{ background:"none", border:"none", cursor:"pointer", fontSize:14, padding:"2px" }}>🗑️</button>
+            </>
+          )}
+        </div>
+      </div>
+      <h3 style={{ margin:"0 0 8px", fontSize:15, fontWeight:700, color:"#0F172A", lineHeight:1.4 }}>{post.title}</h3>
+      <p style={{ margin:"0 0 12px", fontSize:13, color:"#64748B", lineHeight:1.6 }}>{post.content}</p>
+      <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+        <button onClick={()=>onUpvote(post.id)} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:999, border:"1.5px solid", fontSize:13, fontWeight:600, cursor:"pointer", background:upvoted[post.id]?"#EEF2FF":"#F8FAFC", borderColor:upvoted[post.id]?"#6366F1":"#E2E8F0", color:upvoted[post.id]?"#6366F1":"#64748B" }}>▲ {post.upvotes}</button>
+        <button onClick={onExpand} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:999, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:500, cursor:"pointer", background:"#F8FAFC", color:"#64748B" }}>💬 {comments.length} comments</button>
+      </div>
+      {expanded && (
+        <div style={{ marginTop:14, borderTop:"1px solid #F1F5F9", paddingTop:14 }}>
+          {comments.map(c=>(
+            <div key={c.id} style={{ display:"flex", gap:8, marginBottom:10, padding:"8px 12px", background:c.isOwner?"#EEF2FF":"#F8FAFC", borderRadius:10, border:c.isOwner?"1px solid #C7D2FE":"1px solid #F1F5F9" }}>
+              <div style={{ width:28, height:28, borderRadius:"50%", background:c.isOwner?"linear-gradient(135deg,#312E81,#4338CA)":"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:12, flexShrink:0 }}>{c.author[0]}</div>
+              <div style={{ flex:1 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3, flexWrap:"wrap" }}>
+                  <AuthorName name={c.author} isOwner={c.isOwner} />
+                  {c.isOwner && <FounderBadge />}
+                  <span style={{ fontSize:11, color:"#94A3B8" }}>{c.timestamp}</span>
+                  {isOwner && !c.isOwner && <button onClick={()=>{ /* delete comment */ }} style={{ background:"none", border:"none", color:"#EF4444", cursor:"pointer", fontSize:12 }}>🗑️</button>}
+                </div>
+                <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.5 }}>{c.text}</p>
+              </div>
+            </div>
+          ))}
+          <div style={{ display:"flex", gap:8, marginTop:10 }}>
+            <input value={newComment} onChange={e=>onCommentChange(e.target.value)} onKeyDown={e=>e.key==="Enter"&&onAddComment()} placeholder="Write a comment..." style={{ flex:1, padding:"8px 12px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, outline:"none", fontFamily:"inherit" }} />
+            <button onClick={onAddComment} style={{ background:"linear-gradient(135deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", padding:"8px 16px", borderRadius:10, fontWeight:600, fontSize:13, cursor:"pointer" }}>Post</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StoryCard({ story:s, isOwner, onDelete, onFeature, onBan }) {
+  const isFeatured = s.featured;
+  return (
+    <div style={{ background:isFeatured?"linear-gradient(135deg,#FFFBEB,#FFF7ED)":"#fff", border:`1.5px solid ${isFeatured?"#FEF3C7":s.isOwner?"#E0E7FF":"#F1F5F9"}`, borderRadius:16, padding:"1.25rem", boxShadow:isFeatured?"0 2px 12px rgba(245,158,11,0.08)":"none" }}>
+      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+        <div style={{ width:38, height:38, borderRadius:"50%", background:s.isOwner?"linear-gradient(135deg,#312E81,#4338CA)":isFeatured?"linear-gradient(135deg,#F59E0B,#EF4444)":"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:15, flexShrink:0 }}>{s.author[0]}</div>
+        <div style={{ flex:1 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
+            <AuthorName name={s.author} isOwner={s.isOwner} />
+            {s.isOwner && <FounderBadge />}
+          </div>
+          <p style={{ margin:0, fontSize:12, color:isFeatured?"#92400E":"#64748B" }}>{s.grade}</p>
+        </div>
+        <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+          <span style={{ fontSize:11, color:"#94A3B8" }}>{s.timestamp}</span>
+          {isOwner && (
+            <>
+              <button onClick={()=>onFeature(s.id)} title="Feature/unfeature" style={{ background:"none", border:"none", cursor:"pointer", fontSize:14 }}>⭐</button>
+              <button onClick={()=>onBan(s.author)} title="Ban user" style={{ background:"none", border:"none", cursor:"pointer", fontSize:14 }}>🚫</button>
+              <button onClick={()=>onDelete(s.id)} title="Delete" style={{ background:"none", border:"none", cursor:"pointer", fontSize:14 }}>🗑️</button>
+            </>
+          )}
+        </div>
+      </div>
+      <p style={{ margin:"0 0 6px", fontSize:15, fontWeight:700, color:"#0F172A" }}>{s.achievement}</p>
+      {s.program && <p style={{ margin:"0 0 8px", fontSize:12, color:isFeatured?"#92400E":"#6366F1", fontWeight:500 }}>📌 {s.program}</p>}
+      {s.tip && <p style={{ margin:0, fontSize:13, color:isFeatured?"#78350F":"#64748B", fontStyle:"italic", lineHeight:1.5 }}>"{s.tip}"</p>}
     </div>
   );
 }
@@ -1738,12 +2734,12 @@ export default function App() {
             📚 Study Hub <span style={{ background:"#EF4444", color:"#fff", fontSize:9, fontWeight:800, padding:"1px 5px", borderRadius:999 }}>SOON</span>
           </button>
           <div style={{ position:"relative" }}>
-            <button onClick={()=>setMoreOpen(m=>!m)} style={{ padding:"8px 12px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, cursor:"pointer", background:["news","changelog"].includes(page)?"linear-gradient(135deg,#6366F1,#8B5CF6)":"#fff", color:["news","changelog"].includes(page)?"#fff":"#64748B", display:"flex", alignItems:"center", gap:4 }}>
+            <button onClick={()=>setMoreOpen(m=>!m)} style={{ padding:"8px 12px", borderRadius:10, border:"1.5px solid #E2E8F0", fontSize:13, fontWeight:600, cursor:"pointer", background:["news","changelog","community","scholarships"].includes(page)?"linear-gradient(135deg,#6366F1,#8B5CF6)":"#fff", color:["news","changelog","community","scholarships"].includes(page)?"#fff":"#64748B", display:"flex", alignItems:"center", gap:4 }}>
               More {moreOpen?"▲":"▼"}
             </button>
             {moreOpen && (
               <div style={{ position:"absolute", top:"calc(100% + 6px)", right:0, background:"#fff", border:"1.5px solid #F1F5F9", borderRadius:12, padding:6, minWidth:160, boxShadow:"0 8px 24px rgba(0,0,0,0.12)", zIndex:300 }}>
-                {[["news","📰 News"],["changelog","📣 What's New"]].map(([p,label])=>(
+                {[["news","📰 News"],["changelog","📣 What's New"],["community","👥 Community"],["scholarships","🎓 Scholarships"]].map(([p,label])=>(
                   <button key={p} onClick={()=>{ setPage(p); setMoreOpen(false); }} style={{ width:"100%", padding:"9px 12px", borderRadius:8, border:"none", fontSize:13, fontWeight:600, cursor:"pointer", textAlign:"left", background:page===p?"#EEF2FF":"transparent", color:page===p?"#4338CA":"#374151", display:"block" }}>{label}</button>
                 ))}
               </div>
@@ -1757,6 +2753,8 @@ export default function App() {
       {page==="collegeprep" && <CollegePrepHub isPro={isPro} onUpgrade={()=>setModal("upgrade")} />}
       {page==="news" && <NewsPage isPro={isPro} onUpgrade={()=>setModal("upgrade")} />}
       {page==="changelog" && <ChangelogPage onUpgrade={()=>setModal("upgrade")} />}
+      {page==="community" && <CommunityPage isPro={isPro} onUpgrade={()=>setModal("upgrade")} />}
+      {page==="scholarships" && <ScholarshipHub isPro={isPro} onUpgrade={()=>setModal("upgrade")} />}
       {page==="opportunities" && <>
 
       <div style={{ background:"linear-gradient(135deg,#4F46E5 0%,#7C3AED 60%,#A855F7 100%)", padding:"2.5rem 1.5rem 3.5rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
@@ -1785,9 +2783,7 @@ export default function App() {
               {tab.pro && !isPro && <span style={{ fontSize:9, background:"#FEF3C7", color:"#92400E", padding:"1px 5px", borderRadius:999, fontWeight:700 }}>PRO</span>}
             </button>
           ))}
-          <button onClick={()=>setIsPro(p=>!p)} style={{ padding:"6px 12px", borderRadius:10, border:"1px dashed #E2E8F0", fontSize:11, fontWeight:600, cursor:"pointer", color:"#94A3B8", background:"transparent", whiteSpace:"nowrap" }}>
-            {isPro?"🔓 Pro ON":"🔒 Test Pro"}
-          </button>
+
         </div>
 
         {activeTab==="saved" && <SavedTab savedIds={savedIds} appStatuses={appStatuses} isPro={isPro} onToggleSave={handleToggleSave} onStatusChange={handleStatusChange} onUpgrade={()=>setModal("upgrade")} profile={profile} />}
@@ -1920,4 +2916,4 @@ export default function App() {
       </>}
     </div>
   );
-      }  
+}
