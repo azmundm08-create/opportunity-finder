@@ -1,1 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap');
 
+:root {
+  --primary:       oklch(0.44 0.115 160);
+  --primary-hover: oklch(0.38 0.108 160);
+  --primary-light: oklch(0.93 0.042 160);
+  --primary-fg:    oklch(1 0 0);
+
+  --bg:            oklch(1 0 0);
+  --surface:       oklch(0.977 0.003 160);
+  --surface-2:     oklch(0.955 0.007 160);
+  --border:        oklch(0.912 0.007 160);
+  --border-strong: oklch(0.845 0.013 160);
+
+  --ink:    oklch(0.148 0.015 160);
+  --muted:  oklch(0.40 0.018 160);
+  --subtle: oklch(0.58 0.010 160);
+
+  --amber:    oklch(0.68 0.145 70);
+  --amber-bg: oklch(0.96 0.050 70);
+  --amber-fg: oklch(0.26 0.065 70);
+  --red:      oklch(0.55 0.195 22);
+  --red-bg:   oklch(0.96 0.040 22);
+  --green:    oklch(0.50 0.130 155);
+  --green-bg: oklch(0.94 0.045 155);
+  --blue:     oklch(0.56 0.095 220);
+  --blue-bg:  oklch(0.94 0.038 220);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+a {
+  color: var(--primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
